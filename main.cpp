@@ -9,6 +9,7 @@
  *
  * Created on 18 de agosto de 2022, 17:50
  */
+    
 #include <fstream>
 #include <iostream>
 #include <sstream> 
@@ -17,20 +18,20 @@
 #include <stdlib.h>
 #include "nlohmann\json.hpp"
 // cambios realizados
-using namespace nlohmann;
+using namespace nlohmann; // para el json 
 using namespace std;
 
 /*
  * 
  */
-
+// para todas las estructuras 
 typedef struct Usuario *nodoUS;
 typedef struct Articulo *nodoArt;
 typedef struct Rareza *nodoRar;
 typedef struct Movimiento *nodoMov;
 typedef struct Tutorial *nodoTut;
 
-
+// variables globales para las listas 
 nodoUS listaUs = NULL;
 nodoRar listaArt = NULL;
 nodoUS ensesion = NULL;
@@ -38,23 +39,24 @@ nodoTut tutorial = NULL;
 
 int tamUs = 0;
 
+// funcion para multiplicar los strings, se utiliza cuando se va a imprimir en consola 
 std::string operator*(const std::string& str, size_t times) {
     std::stringstream stream;
     for (size_t i = 0; i < times; i++) stream << str;
     return stream.str();
 }
-
+// nodo movimiento 
 struct Movimiento {
     int x;
     int y;
 };
-
+// para la cola del tutoria 
 struct Tutorial {
     int inicio;
     int fin;
     struct Movimiento *movs[1500];
 };
-
+// nodo usuaro para las listas
 struct Usuario {
 public:
     string nick;
@@ -64,7 +66,7 @@ public:
     struct Usuario *sig;
     struct Usuario *ant;
 };
-
+// nodo articulo para las listas
 struct Articulo {
     int id;
     string categoria;
@@ -73,13 +75,13 @@ struct Articulo {
     string src;
     struct Articulo *sig;
 };
-
+// nodo para las listas 
 struct Rareza {
     string rareza;
     struct Articulo *sig;
     struct Rareza *cat;
 };
-
+// crea un nodo para los movimientos 
 nodoMov crear_nodo(int x, int y) {
     nodoMov nodo;
     nodo = new(struct Movimiento);
@@ -87,7 +89,7 @@ nodoMov crear_nodo(int x, int y) {
     nodo->y = y;
     return nodo;
 }
-
+// para crear un nodo articulo
 nodoArt crear_nodo(int id, string categoria, string nombre, int precio, string src) {
     nodoArt nodo;
     nodo = new(struct Articulo);
@@ -100,7 +102,7 @@ nodoArt crear_nodo(int id, string categoria, string nombre, int precio, string s
 
     return nodo;
 }
-
+// creamos nodos para los usuariios 
 nodoUS crear_nodo(string nick, string password, string edad, int monedas) {
     nodoUS nodo;
     nodo = new(struct Usuario);
@@ -113,15 +115,15 @@ nodoUS crear_nodo(string nick, string password, string edad, int monedas) {
 
     return nodo;
 }
-
+// para añadir elementos a la cola 
 void enqueue(nodoTut &cola, nodoMov nodo) {
     cola->movs[++cola->fin] = nodo;
 }
-
+// para quitar elementos de la cola 
 nodoMov dequeue(nodoTut &cola) {
     return cola->movs[cola->inicio++];
 }
-
+// para colocar primeros en la lista de los ususarios 
 int poner_primeroUs(nodoUS &Lista, nodoUS us, int tam) {
     us->sig = us;
     us->ant = us;
@@ -129,7 +131,7 @@ int poner_primeroUs(nodoUS &Lista, nodoUS us, int tam) {
     tam++;
     return tam;
 }
-
+// para colocar los ultimos en la lista de usuarios
 int poner_ultimoUs(nodoUS &lista, nodoUS us, int tam) {
     nodoUS temp = new (struct Usuario);
     temp = lista;
@@ -146,6 +148,7 @@ int poner_ultimoUs(nodoUS &lista, nodoUS us, int tam) {
     return tam;
 }
 
+// nodo para buscar un nodo en la lista de usuarios 
 nodoUS buscar(string Nombre) {
     nodoUS temp = new(struct Usuario);
     temp = listaUs;
@@ -155,7 +158,7 @@ nodoUS buscar(string Nombre) {
     }
     return NULL;
 }
-
+// funcion para colocar un articulo en la lista de listas 
 void ponerArt(nodoRar &lista, nodoArt art) {
     nodoArt temp = new(struct Articulo);
 
@@ -170,7 +173,7 @@ void ponerArt(nodoRar &lista, nodoArt art) {
     }
 
 }
-
+// para poder ver el tutorial
 void imprimir_tutorial() {
     nodoMov temp = new(struct Movimiento);
     int end = tutorial->fin;
@@ -212,13 +215,16 @@ void imprimir_tutorial() {
     cout << "<--- ";
 }
 
+// para imprimir la lista de usuarios 
+// recorremos toda la lista
 void imprimir_listaUs(nodoUS &lista, int tam) {
     nodoUS temp = new(struct Usuario);
     temp = lista;
-    int espacios;
-    int espacios2;
+    int espacios; // para que todo quede centrado en el nodo antes de la palabra
+    int espacios2; // despues de la palabra 
     string esp = " ";
-
+    
+    // recorremos la lista para cada nombre
     for (int i = 0; i < tam; i++) {
         espacios = 25 - 8 - temp->nick.length();    
         if (espacios % 2 == 0) {
@@ -228,6 +234,7 @@ void imprimir_listaUs(nodoUS &lista, int tam) {
             espacios = (espacios + 1) / 2;
             espacios2 = espacios - 1;
         }
+        // imprimimos nombre y espacios y cerramos nodo
         cout << "|" << esp * espacios << "Nombre: " << temp->nick << esp * espacios2 << "| -> ";
         temp = temp->sig;
     }
@@ -242,6 +249,7 @@ void imprimir_listaUs(nodoUS &lista, int tam) {
     cout << "|" << esp * espacios << "Nombre: " << temp->nick << esp * espacios2 << "|" << endl;
 
     temp = lista;
+    // para imprimir el password 
     for (int i = 0; i < tam; i++) {
         espacios = 25 - 10 - temp->password.length();
         if (espacios % 2 == 0) {
@@ -311,7 +319,8 @@ void imprimir_listaUs(nodoUS &lista, int tam) {
     cout << "|" << esp * espacios << "Monedas: " << temp->monedas << esp * espacios2 << "|" << endl << endl;
 
 }
-
+// lista para imprimir los articulos 
+// imprime la estructura de los articulos 
 void imprimir_listaRar(nodoRar &lista) {
     nodoRar temp = new(struct Rareza);
     nodoArt temp2 = new(struct Articulo);
@@ -332,7 +341,8 @@ void imprimir_listaRar(nodoRar &lista) {
         temp = temp->cat;
     }
 }
-
+// para cargar la informacion 
+// 
 void Carga() {
     cout << "\nCargando\n";
     string entrada;
@@ -345,7 +355,8 @@ void Carga() {
     std::stringstream strStream;
     strStream << inFile.rdbuf(); //read the file
     std::string str = strStream.str();
-
+    
+    // aca tomamos informacion del json 
     auto informacion = json::parse(str);
     json usuarios = informacion.at("usuarios");
     json articulos = informacion.at("articulos");
@@ -430,6 +441,7 @@ void Carga() {
     cout << "\nSe han cargado todos los datos\n\n";
 }
 
+// metodo para registrar a los usuarios 
 void Registrar() {
     cout << "\nRegistrando\n\n";
     string nombre, password, edad;
@@ -447,7 +459,7 @@ void Registrar() {
     }
     cout << endl << endl;
 }
-
+// metodo para editar los usuarios
 void Editar() {
     string usuario;
     string password;
@@ -464,7 +476,7 @@ void Editar() {
     ensesion->password = password;
     cout << "Usuario modificado exitosamente\n" << endl << endl;
 }
-
+// metodo para eliminar usuarios
 bool Eliminar() {
     bool eliminado = false;
     string elec;
@@ -483,7 +495,7 @@ bool Eliminar() {
     }
     return eliminado;
 }
-
+// para imprimir el tutorial
 void Tutorial() {
     nodoTut temp = new(struct Tutorial);
     nodoMov tempM = new(struct Movimiento);
@@ -511,9 +523,9 @@ void Tienda() {
 void Movimientos() {
 
 }
-
+// para el menu para iniciar sesion 
 void App() {
-    string menu = "************** Menu **************\n* 1. Editar informacion          *\n* 2. Eliminar Cuenta             *\n* 3. Ver tutorial                *\n* 4. Ver tienda                  *\n* 5. Realizar movimientos        *\n* Salir al menu principal        *\n**********************************\n";
+    string menu = "************** Menu **************\n* 1. Editar informacion          *\n* 2. Eliminar Cuenta             *\n* 3. Ver tutorial                *\n* 4. Ver tienda                  *\n* 5. Realizar movimientos        *\n* 6.Salir al menu principal        *\n**********************************\n";
     cout << menu;
     int elec;
 
@@ -548,6 +560,7 @@ void App() {
     }
 }
 
+// para hacer login 
 void Login() {
     string usuario;
     string password;
@@ -570,7 +583,7 @@ void Login() {
         }
     }
 }
-
+// generamos el reporte de usuarios 
 void ordenarUsuarios() {
     nodoUS tmp = new(struct Usuario);
     nodoUS tmp2 = new(struct Usuario);
@@ -628,7 +641,7 @@ void ordenarUsuarios() {
         tmp = tmp->sig;
     }
 }
-
+// imprimiendo reportes
 void Reportes() {
     cout << "Reportando\n\n";
     cout << "---------------------------------Reporte de Usuarios---------------------------------\n\n";
@@ -641,7 +654,7 @@ void Reportes() {
     ordenarUsuarios();
     cout << endl << endl;
 }
-
+// menu principal
 void Menu() {
     string menu = "************** Menu **************\n* 1. Carga Masiva                *\n* 2. Registrar Usuario           *\n* 3. Login                       *\n* 4. Reportes                    *\n* Salir del Juego                *\n**********************************\n";
 
