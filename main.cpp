@@ -11,13 +11,11 @@
 #include <stdlib.h>
 #include "nlohmann\json.hpp"
 
+// importamos la libreria para leer el json 
 using namespace nlohmann;
 using namespace std;
 
-/*
- * 
- */
-
+// definimos tipos de estructuras 
 typedef struct Usuario *nodoUS;
 typedef struct Articulo *nodoArt;
 typedef struct Rareza *nodoRar;
@@ -26,41 +24,45 @@ typedef struct Tutorial *nodoTut;
 typedef struct Movs *pila;
 typedef struct nodo_Partida *nodoPart;
 
+// variables globales para las listas 
 nodoUS listaUs = NULL;
 nodoRar listaArt = NULL;
 nodoUS ensesion = NULL;
 nodoTut tutorial = NULL;
 
 int tamUs = 0;
-
+// funcion para multiplicar los strings, se utiliza cuando se va a imprimir en consola
 std::string operator*(const std::string& str, size_t times) {
     std::stringstream stream;
     for (size_t i = 0; i < times; i++) stream << str;
     return stream.str();
 }
 
+// nodo para los movimientos 
 struct Movimiento {
     int x;
     int y;
 };
-
+// para la cola del tutorial 
 struct Tutorial {
-    int inicio;
     int fin;
     struct Movimiento *movs[1500];
 };
 
+// pila para los movimientos
 struct Movs {
     int top;
     struct Movimiento *pila[1500];
 };
 
+
+// lista par guardar los movimientos de cada usuario 
 struct nodo_Partida {
     struct Movs* movimientos;
     string nombre;
     struct nodo_Partida* sig;
 };
-
+// nodo usuario para las listas
 struct Usuario {
 public:
     string nick;
@@ -71,7 +73,7 @@ public:
     struct Usuario *ant;
     struct nodo_Partida *movs;
 };
-
+// nodo articulo para las listas de los articulos
 struct Articulo {
     int id;
     string categoria;
@@ -80,13 +82,14 @@ struct Articulo {
     string src;
     struct Articulo *sig;
 };
-
+// nodo para las listas 
 struct Rareza {
     string rareza;
     struct Articulo *sig;
     struct Rareza *cat;
 };
 
+// para insertar y eliminar en la pila 
 void push(struct Movs *M, struct Movimiento *m) {
     M->top++;
     M->pila[M->top] = m;
@@ -97,7 +100,7 @@ nodoMov pop(struct Movs *M) {
     M->top--;
     return movimiento;
 }
-
+// nodo para los movimientos
 nodoMov crear_nodo(int x, int y) {
     nodoMov nodo;
     nodo = new(struct Movimiento);
@@ -105,7 +108,7 @@ nodoMov crear_nodo(int x, int y) {
     nodo->y = y;
     return nodo;
 }
-
+// nodo para los movimeientos en partidas
 nodoPart crear_nodo(pila movimientos, string nombre){
     nodoPart nodo;
     nodo = new(struct nodo_Partida);
@@ -113,7 +116,7 @@ nodoPart crear_nodo(pila movimientos, string nombre){
     nodo->nombre = nombre;
     nodo->sig = nullptr;
 }
-
+// para crear un nodo articulo
 nodoArt crear_nodo(int id, string categoria, string nombre, int precio, string src) {
     nodoArt nodo;
     nodo = new(struct Articulo);
@@ -126,7 +129,7 @@ nodoArt crear_nodo(int id, string categoria, string nombre, int precio, string s
 
     return nodo;
 }
-
+// nodo para los usuarios Y sus datos
 nodoUS crear_nodo(string nick, string password, string edad, int monedas) {
     nodoUS nodo;
     nodo = new(struct Usuario);
@@ -140,7 +143,7 @@ nodoUS crear_nodo(string nick, string password, string edad, int monedas) {
 
     return nodo;
 }
-
+// oara añadir y quitar elementos de la cola
 void enqueue(nodoTut &cola, nodoMov nodo) {
     cola->movs[++cola->fin] = nodo;
 }
@@ -148,7 +151,7 @@ void enqueue(nodoTut &cola, nodoMov nodo) {
 nodoMov dequeue(nodoTut &cola) {
     return cola->movs[cola->inicio++];
 }
-
+// para colocar primeros en la lista de los ususarios 
 int poner_primeroUs(nodoUS &Lista, nodoUS us, int tam) {
     us->sig = us;
     us->ant = us;
@@ -156,7 +159,7 @@ int poner_primeroUs(nodoUS &Lista, nodoUS us, int tam) {
     tam++;
     return tam;
 }
-
+// para colocar los ultimos en la lista de usuarios
 int poner_ultimoUs(nodoUS &lista, nodoUS us, int tam) {
     nodoUS temp = new (struct Usuario);
     temp = lista;
@@ -172,7 +175,7 @@ int poner_ultimoUs(nodoUS &lista, nodoUS us, int tam) {
     tam++;
     return tam;
 }
-
+// para colocar los ultimos en de las partidas
 void poner_ultimoPart(nodoPart &partida, nodoPart &movs){
     nodoPart lista = partida;
     while(lista->sig != nullptr){
@@ -180,7 +183,7 @@ void poner_ultimoPart(nodoPart &partida, nodoPart &movs){
     }
     lista->sig = movs;
 }
-
+// nodo para buscar un nodo en la lista de usuarios 
 nodoUS buscar(string Nombre) {
     nodoUS temp = new(struct Usuario);
     temp = listaUs;
@@ -190,7 +193,7 @@ nodoUS buscar(string Nombre) {
     }
     return NULL;
 }
-
+// funcion para colocar un articulo en la lista de listas
 void ponerArt(nodoRar &lista, nodoArt art) {
     nodoArt temp = new(struct Articulo);
 
@@ -205,7 +208,7 @@ void ponerArt(nodoRar &lista, nodoArt art) {
     }
 
 }
-
+// para enviar los articulos a la lista
 void poner_lista_Art(nodoArt &lista, nodoArt art) {
     nodoArt temp = new(struct Articulo);
 
@@ -220,7 +223,7 @@ void poner_lista_Art(nodoArt &lista, nodoArt art) {
     }
 
 }
-
+// creamos lista para los articulos
 nodoArt ordenar_Articulos(string modo) {
     nodoArt tmp = new(struct Articulo);
     nodoArt aux = new(struct Articulo);
@@ -297,7 +300,7 @@ nodoArt ordenar_Articulos(string modo) {
 
 
 }
-
+// para poder ver los articulos que hay en la tienda
 void imprimir_Tienda() {
     nodoArt lista = ordenar_Articulos("m");
     nodoArt tmp = lista;
@@ -309,7 +312,7 @@ void imprimir_Tienda() {
         i++;
     }
 }
-
+// para poder ver el tutorial
 void imprimir_tutorial() {
     nodoMov temp = new(struct Movimiento);
     int end = tutorial->fin;
@@ -350,7 +353,8 @@ void imprimir_tutorial() {
     }
     cout << "<--- ";
 }
-
+// para imprimir la lista de usuarios 
+// recorremos toda la lista
 void imprimir_listaUs(nodoUS &lista, int tam) {
     nodoUS temp = new(struct Usuario);
     temp = lista;
@@ -450,7 +454,8 @@ void imprimir_listaUs(nodoUS &lista, int tam) {
     cout << "|" << esp * espacios << "Monedas: " << temp->monedas << esp * espacios2 << "|" << endl << endl;
 
 }
-
+// lista para imprimir los articulos 
+// imprime la estructura de los articulos 
 void imprimir_listaRar(nodoRar &lista) {
     nodoRar temp = new(struct Rareza);
     nodoArt temp2 = new(struct Articulo);
@@ -471,7 +476,7 @@ void imprimir_listaRar(nodoRar &lista) {
         temp = temp->cat;
     }
 }
-
+// carga de datos por medio del json
 void Carga() {
     cout << "\nCargando\n";
     string entrada;
@@ -568,7 +573,7 @@ void Carga() {
     }
     cout << "\nSe han cargado todos los datos\n\n";
 }
-
+// metodo para registrar a los usuarios 
 void Registrar() {
     cout << "\nRegistrando\n\n";
     string nombre, password, edad;
@@ -586,7 +591,7 @@ void Registrar() {
     }
     cout << endl << endl;
 }
-
+// metodo para editar los usuarios
 void Editar() {
     string usuario;
     string password;
@@ -603,7 +608,7 @@ void Editar() {
     ensesion->password = password;
     cout << "Usuario modificado exitosamente\n" << endl << endl;
 }
-
+// metodo para elimiar a los usuarios
 bool Eliminar() {
     bool eliminado = false;
     string elec;
@@ -622,7 +627,7 @@ bool Eliminar() {
     }
     return eliminado;
 }
-
+// creamos el turtorial
 void Tutorial() {
     nodoTut temp = new(struct Tutorial);
     nodoMov tempM = new(struct Movimiento);
@@ -642,7 +647,7 @@ void Tutorial() {
     cout << "(" << tempM->x << ", " << tempM->y << ")\n";
     enqueue(tutorial, tempM);
 }
-
+// metodo para mosrar artuculos de la tienda y poder comprar
 void Tienda() {
     nodoArt lista = ordenar_Articulos("t");
     nodoArt tmp = lista;
@@ -681,7 +686,7 @@ void Tienda() {
         cout << "No se ha encontrado el Id del articulo que deseas comprar.\n\n";
     }
 }
-
+// metodo para realizar movimientos
 void Movimientos() {
     pila movimientos = new(struct Movs);
     movimientos->top = -1;
@@ -723,7 +728,7 @@ void Movimientos() {
     ensesion->monedas ++;
     cout << "felicidades, has conseguido +1 moneda(s), nuevo saldo: " << ensesion->monedas <<endl;
 }
-
+// realizando inicio de sesion 
 void App() {
     string menu = "************** Menu **************\n* 1. Editar informacion          *\n* 2. Eliminar Cuenta             *\n* 3. Ver tutorial                *\n* 4. Ver tienda                  *\n* 5. Realizar movimientos        *\n* 6.Salir al menu principal        *\n**********************************\n";
     cout << menu;
@@ -759,7 +764,7 @@ void App() {
             App();
     }
 }
-
+// creando login
 void Login() {
     string usuario;
     string password;
@@ -782,7 +787,7 @@ void Login() {
         }
     }
 }
-
+// generamos el reporte de usuarios 
 void ordenarUsuarios() {
     nodoUS tmp = new(struct Usuario);
     nodoUS tmp2 = new(struct Usuario);
@@ -840,7 +845,7 @@ void ordenarUsuarios() {
         tmp = tmp->sig;
     }
 }
-
+// imprimiendo reportes
 void Reportes() {
     cout << "Reportando\n\n";
     cout << "---------------------------------Reporte de Usuarios---------------------------------\n\n";
@@ -855,7 +860,7 @@ void Reportes() {
     imprimir_Tienda();
     cout << endl << endl;
 }
-
+// creamos menu principal
 void Menu() {
     string menu = "************** Menu **************\n* 1. Carga Masiva                *\n* 2. Registrar Usuario           *\n* 3. Login                       *\n* 4. Reportes                    *\n* 5. Salir del Juego                *\n**********************************\n";
 
