@@ -16,7 +16,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "nlohmann\json.hpp"
-
+// cambios realizados
 using namespace nlohmann;
 using namespace std;
 
@@ -220,7 +220,7 @@ void imprimir_listaUs(nodoUS &lista, int tam) {
     string esp = " ";
 
     for (int i = 0; i < tam; i++) {
-        espacios = 25 - 8 - temp->nick.length();
+        espacios = 25 - 8 - temp->nick.length();    
         if (espacios % 2 == 0) {
             espacios = espacios / 2;
             espacios2 = espacios;
