@@ -1,0 +1,85 @@
+{
+	"usuarios": [{
+			"nick": "David",
+			"password": "1234",
+			"monedas": "0",
+			"edad": "18"
+		},
+		{
+			"nick": "Marcos",
+			"password": "4567",
+			"monedas": "15",
+			"edad": "15"
+		},
+		{
+			"nick": "Luis",
+			"password": "7891",
+			"monedas": "5",
+			"edad": "30"
+		},
+		{
+			"nick": "Pedro",
+			"password": "7891",
+			"monedas": "5",
+			"edad": "20"
+		}
+	],
+	"articulos": [{
+			"id": "123456",
+			"categoria": "mitico",
+			"precio": "100",
+			"nombre": "Barco ranita",
+			"src": "barcoranita.jpg"
+		},
+		{
+			"id": "234567",
+			"categoria": "legendario",
+			"precio": "300",
+			"nombre": "Barco interdimensional",
+			"src": "interdimensional.jpg"
+		},
+		{
+			"id": "345678",
+			"categoria": "raro",
+			"precio": "150",
+			"nombre": "Flota japonesa",
+			"src": "japonesa.jpg"
+		},
+		{
+			"id": "456789",
+			"categoria": "legendario",
+			"precio": "200",
+			"nombre": "Barco cuadrado",
+			"src": "cuadro.jpg"
+		}
+	],
+	"tutorial": {
+		"ancho": "10",
+		"alto": "30",
+		"movimientos": [{
+				"x": "1",
+				"y": "6"
+			},
+			{
+				"x": "3",
+				"y": "9"
+			},
+			{
+				"x": "5",
+				"y": "1"
+			},
+			{
+				"x": "5",
+				"y": "8"
+			},
+			{
+				"x": "6",
+				"y": "3"
+			},
+			{
+				"x": "0",
+				"y": "0"
+			}
+		]
+	}
+}
