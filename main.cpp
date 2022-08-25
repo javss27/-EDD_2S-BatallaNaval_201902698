@@ -45,6 +45,7 @@ struct Movimiento {
 };
 // para la cola del tutorial 
 struct Tutorial {
+    int inicio;
     int fin;
     struct Movimiento *movs[1500];
 };
